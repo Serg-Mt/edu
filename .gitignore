@@ -1,4 +1,5 @@
 .eslintrc.yml
+_dist/
 
 # Logs
 logs

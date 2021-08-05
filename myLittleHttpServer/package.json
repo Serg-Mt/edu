@@ -1,6 +1,6 @@
 {
   "name": "my-little-http-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Учебный HTTP серверочек ;)",
   "main": "mlserv.js",
   "type": "module",
