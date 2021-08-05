@@ -6,7 +6,7 @@
 - [x] обработку данных форм
 - [x] читает и устанавливает cookie 
 
-для запуска нужны два файла mlserv.js и package.json  
+для запуска нужны два файла [mlserv.js](https://raw.githubusercontent.com/Serg-Mt/edu/main/myLittleHttpServer/mlserv.js) и [package.json](https://raw.githubusercontent.com/Serg-Mt/edu/main/myLittleHttpServer/package.json)    
 ❶ устанавливаете зависимости командой:  
 
     npm install
