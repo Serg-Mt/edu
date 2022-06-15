@@ -32,7 +32,7 @@ const
 import { createServer, STATUS_CODES } from 'http'
 import { URL, URLSearchParams } from 'url'
 import { parse as parsePath } from 'path'
-import { parse as parseCookie } from 'cookie'         // https://www.npmjs.com/package/cookie
+import { parse as parseCookie } from 'cookie' // https://www.npmjs.com/package/cookie
 
 const
   DB = {               // нелепая пародия на базу данных
@@ -41,7 +41,7 @@ const
       admin: { pass: '321', name: '👑ADMIN' }, // да да, прям так... никого не стесняемся :)
       // login: { pass:'password', name: 'userName' }
     },
-    online: Object.create(null),               // а тут будем хранить сессии пользователей
+    online: Object.create(null),  // а тут будем хранить сессии пользователей
 
     delOnlineUser(uid) { delete this.online[uid] },
 
@@ -125,10 +125,10 @@ async function getAndParsePostBody(request) {
       .on('data', chunk => buff += chunk)
       .on('end', () => resolve(buff))
   });
-  return new URLSearchParams(body) //  🌟 применили интерефейс URLSearchParams() для POST form data
+  return new URLSearchParams(body) //  🌟 применили интерфейс URLSearchParams() для POST form data
 }
 
-function getUser(cookies, searchParams, responseHeaders) { // получаем пользователя по cookies и даннным html-формы
+function getUser(cookies, searchParams, responseHeaders) { // получаем пользователя по cookies и данным html-формы
   let user = null; // главное в этой функции
   if (Object.keys(cookies).length > 0) console.log('\t cookies: ', cookies);
 
@@ -194,8 +194,8 @@ function getHtml(label, user) { // формируем HTML по шаблону
         </html>`)
 }
 
-function loginForm() { // 💡 тут есть хитрость - при нажатии накнопку "Submit (POST)"" очищаем url.search при помощи JS History API см https://developer.mozilla.org/ru/docs/Web/API/History_API
-                      // иначе можем получить и GET и POST данные, что не является проблемой для это сервера, но может нас запутать
+function loginForm() { // 💡 тут есть хитрость - при нажатии на кнопку "Submit (POST)"" очищаем url.search при помощи JS History API см https://developer.mozilla.org/ru/docs/Web/API/History_API
+                      // иначе можем получить одновременно и GET и POST данные, что не является проблемой для это сервера, но может нас запутать
   return `<form>      
         <label>Name<input name="username"/></label><label>Password<input name="psw" type="password"/></label>
         <button type="submit">Submit</button><button type="submit" value="Submit (POST)" formmethod="post" onclick="let dl=document.location;history.replaceState(null,'',(new window.URL(dl.pathname,dl.origin)))">submit with post</button>
