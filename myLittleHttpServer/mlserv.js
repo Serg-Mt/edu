@@ -1,4 +1,5 @@
-const myName = `My Little HTTP Server`,
+const 
+  myName = `My Little HTTP Server`,
   port = 3000;
 // учебный пример того, что может уметь HTTP-сервер,
 
@@ -6,7 +7,7 @@ const myName = `My Little HTTP Server`,
 // ✔ роутинг
 // ✔ обработку данных форм (GET и POST запросов)
 // ✔ читает и устанавливает cookie 
-// ✔ демонстрируеся парсинг:
+// ✔ демонстрируется парсинг:
 //    * http-headers( автоматически, при обработке запроса --> request.headers)
 //    🌟 URL ( urlObject = new URL ... )
 //    🌟 cookies ( cookie.parse из npm пакета cookie https://www.npmjs.com/package/cookie )
