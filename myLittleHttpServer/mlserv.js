@@ -1,4 +1,4 @@
-const 
+const
   myName = `My Little HTTP Server`,
   port = 3000;
 // учебный пример того, что может уметь HTTP-сервер,
@@ -8,7 +8,7 @@ const
 // ✔ обработку данных форм (GET и POST запросов)
 // ✔ читает и устанавливает cookie 
 // ✔ демонстрируется парсинг:
-//    * http-headers( автоматически, при обработке запроса --> request.headers)
+//    🌟 http-headers( автоматически, при обработке запроса --> request.headers)
 //    🌟 URL ( urlObject = new URL ... )
 //    🌟 cookies ( cookie.parse из npm пакета cookie https://www.npmjs.com/package/cookie )
 //    🌟 GET-данные формы ( url.searchParams )
@@ -22,7 +22,7 @@ const
 //  npm install
 // ❷ далее запускаете сервер: 
 //  node mlserv.js
-// ❸ потом заходим браузером на страницу http://localhost:3000
+// ❸ потом заходим браузером на http://localhost:3000
 
 // ВНИМАНИЕ!!! функции аутентификации намеренно наивны и не предназначены для использования, даже как каркас
 // Это только примитивная демонстрация того, как на коленке написать сервер на nodejs,
@@ -37,9 +37,9 @@ import { parse as parseCookie } from 'cookie' // https://www.npmjs.com/package/c
 const
   DB = {               // нелепая пародия на базу данных
     accounts: {
+      // формат login: { pass:'password', name: 'userName' }
       user: { pass: '123', name: '👤USER' },   // это логины + пароли пользователей 
-      admin: { pass: '321', name: '👑ADMIN' }, // да да, прям так... никого не стесняемся :)
-      // login: { pass:'password', name: 'userName' }
+      admin: { pass: '321', name: '👑ADMIN' }, // да да, прям так... никого не стесняемся :)      
     },
     online: Object.create(null),  // а тут будем хранить сессии пользователей
 
@@ -113,7 +113,7 @@ function getAnswer(url, inHeaders, postData) { // наиважнейшая фу�
 }
 
 async function getAndParsePostBody(request) {
-  // обработка POST запроса  сложнее чем GET, необходимо асинхронно работать со nodejs Stream см https://habr.com/ru/post/479048/
+  // обработка POST запроса  сложнее чем GET, необходимо асинхронно работать с nodejs Stream см. https://habr.com/ru/post/479048/
   // суть в том что request это экземпляр класса http.ClientRequest см https://nodejs.org/api/http.html#http_class_http_clientrequest
   // который, в свою очередь наследован от Readable Stream см https://nodejs.org/api/stream.html#stream_stream
   // пример из документации: https://nodejs.org/api/stream.html#stream_api_for_stream_consumers
@@ -163,7 +163,7 @@ function getUser(cookies, searchParams, responseHeaders) { // получаем �
 
 function getHtml(label, user) { // формируем HTML по шаблону
   let title = 'UNKNOWN',
-    body = '<!-- defalt body -->';
+    body = '<!-- default body -->';
   switch (label) {
     case 'info':
       body += `<ol><li>` + useful.map(x => `<${x.tag + ' ' + Object.entries(x.attr).map(([n, v]) => `${n}="${v}"`).join(' ')}>${x.innerHTML}</${x.tag}>`).join('</li>\n<li>') + `</li></ol>`;
@@ -194,8 +194,8 @@ function getHtml(label, user) { // формируем HTML по шаблону
         </html>`)
 }
 
-function loginForm() { // 💡 тут есть хитрость - при нажатии на кнопку "Submit (POST)"" очищаем url.search при помощи JS History API см https://developer.mozilla.org/ru/docs/Web/API/History_API
-                      // иначе можем получить одновременно и GET и POST данные, что не является проблемой для это сервера, но может нас запутать
+function loginForm() { // 💡 тут есть хитрость - при нажатии на кнопку "Submit (POST)" очищаем url.search при помощи JS History API см https://developer.mozilla.org/ru/docs/Web/API/History_API
+  // иначе можем получить одновременно и GET и POST данные, что не является проблемой для это сервера, но может нас запутать
   return `<form>      
         <label>Name<input name="username"/></label><label>Password<input name="psw" type="password"/></label>
         <button type="submit">Submit</button><button type="submit" value="Submit (POST)" formmethod="post" onclick="let dl=document.location;history.replaceState(null,'',(new window.URL(dl.pathname,dl.origin)))">submit with post</button>
