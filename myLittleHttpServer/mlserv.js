@@ -1,5 +1,5 @@
 const
-  myName = `My Little HTTP Server`,
+  myName = 'My Little HTTP Server',
   port = 3000;
 // учебный пример того, что может уметь HTTP-сервер,
 
@@ -29,9 +29,9 @@ const
 // и имеет смысл только вместе с занятиями на которых разбирается...
 // да, и никакой обработки ошибочных ситуаций, только хардкор!!!
 
-import { createServer, STATUS_CODES } from 'http'
-import { URL, URLSearchParams } from 'url'
-import { parse as parsePath } from 'path'
+import { createServer, STATUS_CODES } from 'node:http'
+import { URL, URLSearchParams } from 'node:url'
+import { parse as parsePath } from 'node:path'
 import { parse as parseCookie } from 'cookie' // https://www.npmjs.com/package/cookie
 
 const
@@ -43,26 +43,27 @@ const
     },
     online: Object.create(null),  // а тут будем хранить сессии пользователей
 
-    delOnlineUser(uid) { delete this.online[uid] },
+    delOnlineUser(uid) { delete this.online[uid]; },
 
-    getUserByCookie(uid) { return this.online?.[uid] },
+    getUserByCookie(uid) { return this.online?.[uid]; },
 
     loginUser(login, pass) {
-      let testUser = this.accounts?.[login];
+      const testUser = this.accounts?.[login];
       if (pass && testUser && pass === testUser?.pass) {
-        let UID = this.newUID();
+        const UID = this.newUID();
         this.online[UID] = testUser;
         return UID;
       }
-      return false
+      return false;
     },
 
-    newUID() { return Math.random() }
+    newUID() { return Math.random(); }
   },
   server = createServer(async (request, response) => { // request - объект полученного запроса, response - объект ответа который будет отправлен, см https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/
+    const start = Date.now();
     console.log((new Date()).toLocaleTimeString(), request.method, request.url, 'HTTP/' + request.httpVersion);
     let // получим данные формы из  Request body в случае POST-запроса 
-      postData = request.method == 'POST' ? await getAndParsePostBody(request) : null, // 
+      postData = 'POST' === request.method ? await getAndParsePostBody(request) : null, // 
       urlObject = new URL(request.url, `http://${request.headers.host}`), // 🌟 разберем URL на части, подробней тут https://nodejs.org/api/url.html#url_url_strings_and_url_objects
       { code, responseHeaders, html } = getAnswer(urlObject, request.headers, postData); // 
 
@@ -70,11 +71,12 @@ const
     response.setHeader('Content-Type', 'text/html; charset=utf-8'); // заголовок см. https://developer.mozilla.org/ru/docs/Glossary/MIME_type
     responseHeaders && Object.entries(responseHeaders)?.forEach(([name, val]) => response.setHeader(name, val));
     response.write(html);
+    response.write((Date.now() - start)+'ms');
     response.end();    // завершаем ответ и отправляем его клиенту // response.end(html)
   });
 
 server.listen(port, () => {
-  console.log(`Server start at http://localhost:` + port);
+  console.log('Server start at http://localhost:' + port);
 });
 
 // далее идут вспомогательные функции --------------------------------------------------------------------------
@@ -94,7 +96,7 @@ function getAnswer(url, inHeaders, postData) { // наиважнейшая фу�
   let path = parsePath(url.pathname);   // 🌟 https://nodejs.org/api/path.html#path_path_parse_path
   switch (path.dir) {
     case '/teststatus':    // пасхалка :)
-      return { code: +path.name, html: `<h1>${path.name}</h1><h2>${STATUS_CODES[path.name]}</h2><a href='${+path.name - 1}'>&lt;&lt;${+path.name - 1}</a>&emsp;<a href='${+path.name + 1}'>${+path.name + 1}&gt;&gt;</a>`, responseHeaders }
+      return { code: +path.name, html: `<h1>${path.name}</h1><h2>${STATUS_CODES[path.name]}</h2><a href='${+path.name - 1}'>&lt;&lt;${+path.name - 1}</a>&emsp;<a href='${+path.name + 1}'>${+path.name + 1}&gt;&gt;</a>`, responseHeaders };
     case '/':
       switch (path.base) {
         case 'favicon.ico':
@@ -118,14 +120,14 @@ async function getAndParsePostBody(request) {
   // который, в свою очередь наследован от Readable Stream см https://nodejs.org/api/stream.html#stream_stream
   // пример из документации: https://nodejs.org/api/stream.html#stream_api_for_stream_consumers
   // еще пример: https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/#request-body
-  request.setEncoding('utf8'); // Get the data as utf8 strings If an encoding is not set, Buffer objects will be received.    
-  let body = await new Promise(resolve => {
+  request.setEncoding('utf8'); // Get the data as utf8 strings. If an encoding is not set, Buffer objects will be received.    
+  const body = await new Promise(resolve => {
     let buff = '';
     request
       .on('data', chunk => buff += chunk)
-      .on('end', () => resolve(buff))
+      .on('end', () => resolve(buff));
   });
-  return new URLSearchParams(body) //  🌟 применили интерфейс URLSearchParams() для POST form data
+  return new URLSearchParams(body); //  🌟 применили интерфейс URLSearchParams() для POST form data
 }
 
 function getUser(cookies, searchParams, responseHeaders) { // получаем пользователя по cookies и данным html-формы
@@ -134,7 +136,7 @@ function getUser(cookies, searchParams, responseHeaders) { // получаем �
 
   // ✔ ЧИТАЕМ cookies
   if (cookies.uid) { // проверим не залогинен ли уже пользователь?
-    let testUser = DB.getUserByCookie(cookies.uid);
+    const testUser = DB.getUserByCookie(cookies.uid);
     if (testUser?.name) {
       user = testUser;
       console.log(`\t клиент предъявил валидный cookie uid, значит это ${user.name}`);
@@ -155,7 +157,7 @@ function getUser(cookies, searchParams, responseHeaders) { // получаем �
       console.log(`\t logout! user=${user?.name}`);
       DB.delOnlineUser(cookies.uid);
       user = null;
-      responseHeaders['Set-Cookie'] = [`uid=;Max-Age=0`]; // ✔ УДАЛЯЕМ cookie у клиента
+      responseHeaders['Set-Cookie'] = ['uid=;Max-Age=0']; // ✔ УДАЛЯЕМ cookie у клиента
     }
   }
   return user;
@@ -166,14 +168,14 @@ function getHtml(label, user) { // формируем HTML по шаблону
     body = '<!-- default body -->';
   switch (label) {
     case 'info':
-      body += `<ol><li>` + useful.map(x => `<${x.tag + ' ' + Object.entries(x.attr).map(([n, v]) => `${n}="${v}"`).join(' ')}>${x.innerHTML}</${x.tag}>`).join('</li>\n<li>') + `</li></ol>`;
+      body += '<ol><li>' + useful.map(x => `<${x.tag + ' ' + Object.entries(x.attr).map(([n, v]) => `${n}="${v}"`).join(' ')}>${x.innerHTML}</${x.tag}>`).join('</li>\n<li>') + '</li></ol>';
     case 'home':
     case 'about':
       title = label;
       body = `<h1>${title}</h1><hr>` + body;
       break;
     default:
-      title = '?????'
+      title = '?????';
   }
   return (
     `<!DOCTYPE html>
@@ -191,7 +193,7 @@ function getHtml(label, user) { // формируем HTML по шаблону
                 </nav>
                 ${body}<hr>
             </body>
-        </html>`)
+        </html>`);
 }
 
 function loginForm() { // 💡 тут есть хитрость - при нажатии на кнопку "Submit (POST)" очищаем url.search при помощи JS History API см https://developer.mozilla.org/ru/docs/Web/API/History_API
@@ -206,12 +208,12 @@ function logoutForm(user) {
   return `<form>
         <h2>Hello, ${user.name}!!</h2>
         <input type="hidden" name="logout" value="true"><input type="submit" value="Выйти">
-    </form>`
+    </form>`;
 }
 
 const useful = [  // 📖 что почитать? - полезные ресурсы 
-  { tag: 'img', attr: { src: `https://studme.org/htm/img/15/1469/1.png` }, innerHTML: '' },
-  { tag: 'a', attr: { href: `https://ru.wikipedia.org/wiki/HTTP` }, innerHTML: `Википедия:  HyperText Transfer Protocol — «протокол передачи гипертекста»` },
+  { tag: 'img', attr: { src: 'https://studme.org/htm/img/15/1469/1.png' }, innerHTML: '' },
+  { tag: 'a', attr: { href: 'https://ru.wikipedia.org/wiki/HTTP' }, innerHTML: 'Википедия:  HyperText Transfer Protocol — «протокол передачи гипертекста»' },
   { tag: 'a', attr: { href: 'https://developer.mozilla.org/ru/docs/Web/HTTP/Overview' }, innerHTML: 'MDN: Обзор протокола HTTP' },
   { tag: 'a', attr: { href: 'https://developer.mozilla.org/ru/docs/Web/HTTP/Status' }, innerHTML: 'MDN: Коды ответа HTTP' },
   { tag: 'a', attr: { href: 'https://developer.mozilla.org/ru/docs/Web/HTTP/Headers' }, innerHTML: 'MDN: Заголовки HTTP' },
