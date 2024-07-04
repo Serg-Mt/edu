@@ -191,43 +191,49 @@ function getHtml(label, user) { // формируем HTML по шаблону
                 <title>${title}</title>
                 <link rel="icon" href="/favicon.ico" type="image/x-icon">
                 <link rel="stylesheet" href="https://unpkg.com/mvp.css"><!-- https://andybrewer.github.io/mvp/  -->
-                <style>nav{margin-bottom:0;}:root{font-size: small;}</style>
+                <style>nav{margin-bottom:0;}:root{font-size: small;}form{float: right;}</style>
             </head>
             <body>
                 <nav>
                   <ul><li><a href="/">Home</a></li><li><a href="/about">About</a></li><li><a href="/info">Info</a></li></ul>
-                  ${user ? logoutForm(user) : loginForm()}
                 </nav>
-                ${body}<hr>
+                <form>
+                ${user ? logoutForm(user) : loginForm()}
+                </form>
+                <main>
+                ${body}
+                </main>
+                <hr>
             </body>
         </html>`);
 }
 
 function loginForm() { // 💡 тут есть хитрость - при нажатии на кнопку "Submit (POST)" очищаем url.search при помощи JS History API см https://developer.mozilla.org/ru/docs/Web/API/History_API
-  // иначе можем получить одновременно и GET и POST данные, что не является проблемой для это сервера, но может нас запутать
-  return `<form>      
-        <label>Name<input name="username"/></label><label>Password<input name="psw" type="password"/></label>
-        <button type="submit">Submit</button><button type="submit" value="Submit (POST)" formmethod="post" onclick="let dl=document.location;history.replaceState(null,'',(new window.URL(dl.pathname,dl.origin)))">submit with post</button>
-      </form>`;
+  // иначе можем получить одновременно и GET и POST данные, что не является проблемой для это сервера, но может запутать
+  return `<label>Name<input name="username"/></label>
+          <label>Password<input name="psw" type="password"/></label>
+          <button type="submit">Submit</button>&nbsp;
+          <button type="submit" value="Submit (POST)" formmethod="post" onclick="let dl=document.location;history.replaceState(null,'',(new window.URL(dl.pathname,dl.origin)))">submit with post</button>
+        `;
 }
 
 function logoutForm(user) {
-  return `<form>
-        <h2>Hello, ${user.name}!!</h2>
-        <input type="hidden" name="logout" value="true"><input type="submit" value="Выйти">
-    </form>`;
+  return `<h2>Hello, ${user.name}!!</h2>
+        <input type="hidden" name="logout" value="true">
+        <input type="submit" value="Выйти">`;
 }
 
-const useful = [  // 📖 что почитать? - полезные ресурсы 
-  { tag: 'img', attr: { src: 'https://studme.org/htm/img/15/1469/1.png' }, innerHTML: '' },
-  { tag: 'a', attr: { href: 'https://ru.wikipedia.org/wiki/HTTP' }, innerHTML: 'Википедия:  HyperText Transfer Protocol — «протокол передачи гипертекста»' },
-  { tag: 'a', attr: { href: 'https://developer.mozilla.org/ru/docs/Web/HTTP/Overview' }, innerHTML: 'MDN: Обзор протокола HTTP' },
-  { tag: 'a', attr: { href: 'https://developer.mozilla.org/ru/docs/Web/HTTP/Status' }, innerHTML: 'MDN: Коды ответа HTTP' },
-  { tag: 'a', attr: { href: 'https://developer.mozilla.org/ru/docs/Web/HTTP/Headers' }, innerHTML: 'MDN: Заголовки HTTP' },
-  { tag: 'a', attr: { href: 'https://learn.javascript.ru/cookie' }, innerHTML: 'Learn JavaScript: Куки, document.cookie' },
-  { tag: 'a', attr: { href: 'https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/' }, innerHTML: 'NodeJS Docs: Anatomy of an HTTP Transaction' },
-  { tag: 'a', attr: { href: 'https://nodejs.org/api/url.html#url_url_strings_and_url_objects' }, innerHTML: 'NodeJS Docs: URL strings and URL objects' },
-  { tag: 'a', attr: { href: 'https://learn.javascript.ru/url' }, innerHTML: 'Learn JavaScript: Объекты URL' },
-  { tag: 'a', attr: { href: 'https://ru.wikipedia.org/wiki/Favicon' }, innerHTML: 'Википедия: Favicon' },
-  { tag: 'a', attr: { href: 'https://andybrewer.github.io/mvp/' }, innerHTML: 'mvp.css - No-Class CSS Framework' },
-];
+const
+  useful = [  // 📖 что почитать? - полезные ресурсы 
+    { tag: 'img', attr: { src: 'https://studme.org/htm/img/15/1469/1.png' }, innerHTML: '' },
+    { tag: 'a', attr: { href: 'https://ru.wikipedia.org/wiki/HTTP' }, innerHTML: 'Википедия:  HyperText Transfer Protocol — «протокол передачи гипертекста»' },
+    { tag: 'a', attr: { href: 'https://developer.mozilla.org/ru/docs/Web/HTTP/Overview' }, innerHTML: 'MDN: Обзор протокола HTTP' },
+    { tag: 'a', attr: { href: 'https://developer.mozilla.org/ru/docs/Web/HTTP/Status' }, innerHTML: 'MDN: Коды ответа HTTP' },
+    { tag: 'a', attr: { href: 'https://developer.mozilla.org/ru/docs/Web/HTTP/Headers' }, innerHTML: 'MDN: Заголовки HTTP' },
+    { tag: 'a', attr: { href: 'https://learn.javascript.ru/cookie' }, innerHTML: 'Learn JavaScript: Куки, document.cookie' },
+    { tag: 'a', attr: { href: 'https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/' }, innerHTML: 'NodeJS Docs: Anatomy of an HTTP Transaction' },
+    { tag: 'a', attr: { href: 'https://nodejs.org/api/url.html#url_url_strings_and_url_objects' }, innerHTML: 'NodeJS Docs: URL strings and URL objects' },
+    { tag: 'a', attr: { href: 'https://learn.javascript.ru/url' }, innerHTML: 'Learn JavaScript: Объекты URL' },
+    { tag: 'a', attr: { href: 'https://ru.wikipedia.org/wiki/Favicon' }, innerHTML: 'Википедия: Favicon' },
+    { tag: 'a', attr: { href: 'https://andybrewer.github.io/mvp/' }, innerHTML: 'mvp.css - No-Class CSS Framework' },
+  ];
