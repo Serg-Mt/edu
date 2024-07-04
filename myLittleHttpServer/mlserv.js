@@ -60,7 +60,8 @@ const
     newUID() { return Math.random(); }
   },
   server = createServer(async (request, response) => { // request - объект полученного запроса, response - объект ответа который будет отправлен, см https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/
-    const start = Date.now();
+    const
+      start = Date.now();
     console.log((new Date()).toLocaleTimeString(), request.method, request.url, 'HTTP/' + request.httpVersion);
     let // получим данные формы из  Request body в случае POST-запроса 
       postData = 'POST' === request.method ? await getAndParsePostBody(request) : null, // 
@@ -71,7 +72,7 @@ const
     response.setHeader('Content-Type', 'text/html; charset=utf-8'); // заголовок см. https://developer.mozilla.org/ru/docs/Glossary/MIME_type
     responseHeaders && Object.entries(responseHeaders)?.forEach(([name, val]) => response.setHeader(name, val));
     response.write(html);
-    response.write((Date.now() - start)+'ms');
+    response.write((Date.now() - start) + 'ms');
     response.end();    // завершаем ответ и отправляем его клиенту // response.end(html)
   });
 
@@ -93,13 +94,14 @@ function getAnswer(url, inHeaders, postData) { // наиважнейшая фу�
     user = getUser(cookies, postData || url.searchParams, responseHeaders); // 🌟 получаем пользователя на основе cookies и данных формы (POST данные приоритетнее чем GET)
 
   // ✔ РОУТИНГ !!! ветвление в зависимости от pathname называют routing или маршрутизация
-  let path = parsePath(url.pathname);   // 🌟 https://nodejs.org/api/path.html#path_path_parse_path
+  let
+    path = parsePath(url.pathname);   // 🌟 https://nodejs.org/api/path.html#path_path_parse_path
   switch (path.dir) {
     case '/teststatus':    // пасхалка :)
       return { code: +path.name, html: `<h1>${path.name}</h1><h2>${STATUS_CODES[path.name]}</h2><a href='${+path.name - 1}'>&lt;&lt;${+path.name - 1}</a>&emsp;<a href='${+path.name + 1}'>${+path.name + 1}&gt;&gt;</a><hr/>`, responseHeaders };
     case '/':
       switch (path.base) {
-        case 'favicon.ico':   
+        case 'favicon.ico':
           return { code: 301, html: '', responseHeaders: { 'Location': 'https://nodejs.org/static/images/favicons/favicon.png' } };
         case '':
         case 'home':
@@ -121,17 +123,20 @@ async function getAndParsePostBody(request) {
   // пример из документации: https://nodejs.org/api/stream.html#stream_api_for_stream_consumers
   // еще пример: https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/#request-body
   request.setEncoding('utf8'); // Get the data as utf8 strings. If an encoding is not set, Buffer objects will be received.    
-  const body = await new Promise(resolve => {
-    let buff = '';
-    request
-      .on('data', chunk => buff += chunk)
-      .on('end', () => resolve(buff));
-  });
+  const
+    body = await new Promise(resolve => {
+      let
+        buff = '';
+      request
+        .on('data', chunk => buff += chunk)
+        .on('end', () => resolve(buff));
+    });
   return new URLSearchParams(body); //  🌟 применили интерфейс URLSearchParams() для POST form data
 }
 
 function getUser(cookies, searchParams, responseHeaders) { // получаем пользователя по cookies и данным html-формы
-  let user = null; // главное в этой функции
+  let
+    user = null; // главное в этой функции
   if (Object.keys(cookies).length > 0) console.log('\t cookies: ', cookies);
 
   // ✔ ЧИТАЕМ cookies
@@ -145,7 +150,8 @@ function getUser(cookies, searchParams, responseHeaders) { // получаем �
   // ✔ ОБРАБОТЧИК ФОРМ !!! 
   if (searchParams.toString()) { // попросту считаем что если url.search  не пустой - значит пришли данные от формы
     console.log(`\t form data: ${searchParams}`);
-    let UID,
+    let
+      UID,
       username = searchParams.get('username'),
       psw = searchParams.get('psw');
     if (username && psw && (UID = DB.loginUser(username, psw))) {
@@ -164,7 +170,8 @@ function getUser(cookies, searchParams, responseHeaders) { // получаем �
 }
 
 function getHtml(label, user) { // формируем HTML по шаблону
-  let title = 'UNKNOWN',
+  let
+    title = 'UNKNOWN',
     body = '<!-- default body -->';
   switch (label) {
     case 'info':
