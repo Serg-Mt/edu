@@ -96,11 +96,11 @@ function getAnswer(url, inHeaders, postData) { // наиважнейшая фу�
   let path = parsePath(url.pathname);   // 🌟 https://nodejs.org/api/path.html#path_path_parse_path
   switch (path.dir) {
     case '/teststatus':    // пасхалка :)
-      return { code: +path.name, html: `<h1>${path.name}</h1><h2>${STATUS_CODES[path.name]}</h2><a href='${+path.name - 1}'>&lt;&lt;${+path.name - 1}</a>&emsp;<a href='${+path.name + 1}'>${+path.name + 1}&gt;&gt;</a>`, responseHeaders };
+      return { code: +path.name, html: `<h1>${path.name}</h1><h2>${STATUS_CODES[path.name]}</h2><a href='${+path.name - 1}'>&lt;&lt;${+path.name - 1}</a>&emsp;<a href='${+path.name + 1}'>${+path.name + 1}&gt;&gt;</a><hr/>`, responseHeaders };
     case '/':
       switch (path.base) {
-        case 'favicon.ico':
-          return { code: 301, html: '', responseHeaders: { 'Location': 'https://nodejs.org/static/images/favicons/favicon.ico' } };
+        case 'favicon.ico':   
+          return { code: 301, html: '', responseHeaders: { 'Location': 'https://nodejs.org/static/images/favicons/favicon.png' } };
         case '':
         case 'home':
         case 'index.html':
